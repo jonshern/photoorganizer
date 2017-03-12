@@ -8,17 +8,15 @@ import argparse
 from dateutil import parser
 from datetime import datetime
 
-
 DATE_TAKEN_KEY = 'Image DateTime'
 DATE_ORIGINAL = 'EXIF DateTimeOriginal'
 DATE_DIGITIZED = 'EXIF DateTimeDigitized'
-rootdir = 'C:\Users\jonshern\Desktop\PictureSorterData'
-
 #constants 
-years = ['2000', '2001', '2002', '2003', '2004', '2005', '2006',
+YEARS = ['2000', '2001', '2002', '2003', '2004', '2005', '2006',
             '2006', '2007', '2008', '2009', '2010', '2011',
             '2012', '2013', '2014', '2015', '2016', '2017']
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 
 class IndexItem:
     fullpath = ''
@@ -36,7 +34,7 @@ class IndexItem:
     def process_file(self):
         file = open(self.fullpath, 'rb')
         self.tags = exifread.process_file(file, details=False)
-        f.close()
+        file.close()
 
     def process_exif(self):
         #Format 2006:07:13 23:50:10
@@ -49,11 +47,27 @@ class IndexItem:
             self.date3 = self.tags[DATE_DIGITIZED]
 
         if self.date1:
-            self.datetaken = parser.parse(str(self.date1))
+            self.datetaken = parse_date(self.date1)
         if self.date2:
-            self.datetaken = parser.parse(str(self.date2))
+            self.datetaken = parse_date(self.date2)
+
 
         #considering adding file datetime / modified time also.
+
+def parse_date(string_datetime):
+    
+    print 'Date Being Converted: ' + str(string_datetime)
+    # return parser.parse(str(string_datetime))
+    # converted = timestring.Date(str(string_datetime))
+    try:
+        converted = datetime.strptime(str(string_datetime), '%Y:%m:%d %H:%M:%S')
+    except: 
+        converted = datetime(2000, 01, 01,01,01,01)
+
+    
+    print 'Converted Date: ' + str(converted)
+    return converted
+
 
 
 def path_creator(destpath, should_create_folders):
@@ -64,8 +78,8 @@ def path_creator(destpath, should_create_folders):
     #         yearset.add(item.year)
 
     if should_create_folders:
-        for year in years:
-            for month in months:
+        for year in YEARS:
+            for month in MONTHS:
                 filepath = destpath + os.sep + year + os.sep + month
                 print 'creating folder' + filepath
                 if not os.path.exists(filepath):
@@ -74,16 +88,6 @@ def path_creator(destpath, should_create_folders):
     #create unknown folder
     filepath = destpath + os.sep + 'Unknown'
     os.makedirs(filepath)
-
-
-
-        
-# parser = argparse.ArgumentParser(description='Organize Photos By Date Taken')
-
-
-
-# def create_organized_path(basepath, index_item):
-    
 
 
 def process_single_item(filename):
@@ -105,7 +109,7 @@ def write_results_to_file(items):
                  DATE_DIGITIZED: item.date3, 'Date Taken': item.datetaken})
 
 
-def process_images():
+def process_images(rootdir):
     items = []
     for subdir, dirs, files in os.walk(rootdir):
         for file in files:
@@ -125,6 +129,8 @@ def process_images():
 
 
 def main():
+    
+
 
 
     parser = argparse.ArgumentParser(
@@ -147,6 +153,7 @@ def main():
     if args['processimages']:
         if args['imagepath'] != 'nopath':
             print 'Process some images'
+            process_images(args['imagepath'])
         else:
             print 'Path missing - User the param -i to set a path'
 
@@ -154,6 +161,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
