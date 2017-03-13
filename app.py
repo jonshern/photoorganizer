@@ -104,7 +104,7 @@ def write_results_to_file(items):
 
         for item in items:
             writer.writerow(
-                {'filepath': item.filename, 'filename':item.filename,
+                {'filepath': item.filepath, 'filename':item.filename,
                  DATE_TAKEN_KEY: item.date1, DATE_ORIGINAL: item.date2,
                  DATE_DIGITIZED: item.date3, 'Date Taken': item.datetaken})
 
