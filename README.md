@@ -11,8 +11,8 @@ Other utilities were either too complex or did not perform the necessary functio
 
 # Command Line Help
 
--f / --foldercreate will create a folder structure for years / months.  Creates folders for 2000/2017 and each month
+-f / --foldercreate will create a folder structure for years / months.  Creates folders for 2000/2017 and each month  
 -d / --destination is where the folder structure will get created.
 
--p / --processimages will go through the images and create a csv files with the name and exif date taken info.
+-p / --processimages will go through the images and create a csv files with the name and exif date taken info.  
 -i / --imagepath is the path that will be searched.
